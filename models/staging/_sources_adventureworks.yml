@@ -1,0 +1,150 @@
+
+
+sources:
+  
+  - name: adventure_works
+    database: fea_academy
+    schema: adventure_works
+    description: "Transactional tables from the Adeventure Works schema of the AdventureWorks ERP"
+    tables:
+      - name: sales_salesorderheader
+        description: "Sales order headers for transactions conducted at AdventureWorks."
+        columns:
+          - name: SalesOrderID
+            description: "Natural primary key (BK) that uniquely identifies the order."
+            tests:
+              - unique
+              - not_null
+
+      - name: sales_salesorderdetail
+        description: "Details and individual line items for each sales order."
+        columns:
+          - name: SalesOrderDetailID
+            description: "Natural primary key (BK) for the order item line detail."
+            tests:
+              - unique
+              - not_null
+          - name: SalesOrderID
+            description: "Foreign key relating back to SalesOrderHeader."
+            tests:
+              - not_null
+
+      - name: sales_customer
+        description: "Customer registry, connecting individual customers (B2C) or corporate/reseller stores (B2B)."
+        columns:
+          - name: CustomerID
+            description: "Natural primary key (BK) of the customer."
+            tests:
+              - unique
+              - not_null
+
+      - name: sales_store
+        description: "Registry for retail stores and resellers (B2B corporate clients)."
+        columns:
+          - name: BusinessEntityID
+            description: "Natural primary key of the store (BK) that links with Customer.StoreID."
+            tests:
+              - unique
+              - not_null
+
+      - name: sales_creditcard
+        description: "Registration details and brands of credit cards used for payment."
+        columns:
+          - name: CreditCardID
+            description: "Natural primary key (BK) of the credit card."
+            tests:
+              - unique
+              - not_null
+
+      - name: sales_salesreason
+        description: "Registry of business and marketing sales reasons (e.g., Promotion, Telex, Referral)."
+        columns:
+          - name: SalesReasonID
+            description: "Natural primary key (BK) of the sales reason."
+            tests:
+              - unique
+              - not_null
+
+      - name: sales_salesorderheadersalesreason
+        description: "Many-to-Many (M:N) junction table mapping sales reasons to each order."
+        columns:
+          - name: SalesOrderID
+            description: "Composite foreign key - Identifier of the sales order header."
+            tests:
+              - not_null
+          - name: SalesReasonID
+            description: "Composite foreign key - Identifier of the sales reason."
+            tests:
+              - not_null
+
+      - name: production_product
+        description: "Core table containing the catalog and registry of AdventureWorks products."
+        columns:
+          - name: ProductID
+            description: "Natural primary key (BK) of the product."
+            tests:
+              - unique
+              - not_null
+
+      - name: production_productsubcategory
+        description: "Product subcategories (e.g., Mountain Bikes, Road Bikes, Touring Bikes)."
+        columns:
+          - name: ProductSubcategoryID
+            description: "Natural primary key (BK) of the product subcategory."
+            tests:
+              - unique
+              - not_null
+
+      - name: production_productcategory
+        description: "Product macro categories (e.g., Bikes, Accessories, Components, Clothing)."
+        columns:
+          - name: ProductCategoryID
+            description: "Natural primary key (BK) of the product category."
+            tests:
+              - unique
+              - not_null
+
+      - name: production_productmodel
+        description: "Product macro models."
+        columns:
+          - name: ProductModelID
+            description: "Natural primary key (BK) of the product model."
+            tests:
+              - unique
+              - not_null
+
+      - name: person_person
+        description: "Unified master registry for individuals (B2C customers, employees, B2B store contact people)."
+        columns:
+          - name: BusinessEntityID
+            description: "Natural primary key (BK) of the individual."
+            tests:
+              - unique
+              - not_null
+
+      - name: person_address
+        description: "Registry of physical postal addresses for billing and shipping destinations."
+        columns:
+          - name: AddressID
+            description: "Natural primary key (BK) of the physical address."
+            tests:
+              - unique
+              - not_null
+
+      - name: person_stateprovince
+        description: "Registry of states, provinces, or regional territories corresponding to countries."
+        columns:
+          - name: StateProvinceID
+            description: "Natural primary key (BK) of the state/province."
+            tests:
+              - unique
+              - not_null
+
+      - name: person_countryregion
+        description: "Registry of sovereign countries and international operating territories."
+        columns:
+          - name: countryregioncode
+            description: "Natural primary key (BK) of the country (2-letter ISO country code)."
+            tests:
+              - unique
+              
