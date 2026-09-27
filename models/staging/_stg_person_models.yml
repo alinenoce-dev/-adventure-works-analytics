@@ -1,0 +1,78 @@
+
+sources:
+
+  - name: stg_person_address
+    description: "Staging layer for the physical addresses table."
+    columns:
+      - name: pk_address
+        description: "Natural primary key of the address."
+        tests:
+          - unique
+          - not_null
+
+      - name: city
+        description: "Name of the city associated with the physical address."
+        tests:
+          - not_null
+
+      - name: fk_state_province
+        description: "Foreign key pointing to the state or province."
+        tests:
+          - not_null
+
+  - name: stg_person_state_province
+    description: "Staging layer containing state and regional divisions of each country."
+    columns:
+      - name: pk_state_province
+        description: "Natural primary key of the state/province."
+        tests:
+          - unique
+          - not_null
+
+      - name: state_province_code
+        description: "Official state/province abbreviation code (e.g., WA, CA, SP)."
+        tests:
+          - not_null
+
+      - name: state_province_name
+        description: "Full name of the state or province."
+        tests:
+          - not_null
+
+      - name: country_region_code
+        description: "Corresponding country of origin code."
+        tests:
+          - not_null
+
+  - name: stg_person_country_region
+    description: "Staging layer mapping the official country and macro territory catalog."
+    columns:
+      - name: pk_country_region_code
+        description: "Natural primary key of the country (ISO-2 code)."
+        tests:
+          - unique
+          - not_null
+
+      - name: country_region_name
+        description: "Full name of the country or international region."
+        tests:
+          - not_null
+
+  - name: stg_person_person
+    description: "Unified staging layer for the physical person master catalog (customers, employees, etc.)."
+    columns:
+      - name: pk_business_entity_id
+        description: "Natural primary key corresponding to the unified registration of the person."
+        tests:
+          - unique
+          - not_null
+
+      - name: first_name
+        description: "First name of the person."
+        tests:
+          - not_null
+          
+      - name: last_name
+        description: "Last name of the person."
+        tests:
+          - not_null
