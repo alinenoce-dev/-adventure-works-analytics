@@ -1,0 +1,26 @@
+
+
+
+models:
+
+  - name: int_sales_reasons_bridge
+    description: >
+      Intermediate Many-to-Many Bridge Table model.
+      Provides the crucial analytical mapping to link AdventureWorks sales orders to their multiple sales reasons (N:M relationship)
+      without triggering double-counting (fan-out) of revenue metrics in aggregated dashboard reports.
+    columns:
+      - name: sk_sales_reason_bridge
+        description: "Surrogate Key composed to uniquely audit and validate each individual bridge mapping occurrence."
+        tests:
+          - unique
+          - not_null
+
+      - name: pk_sales_order
+        description: "Natural Business Key (BK) of the sales order header that initiated the transaction."
+        tests:
+          - not_null
+
+      - name: sk_sales_reason
+        description: "Surrogate Key mapping directly to the master sales reasons dimension (dim_sales_reasons)."
+        tests:
+          - not_null

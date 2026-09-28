@@ -49,7 +49,3 @@ models:
       marts:
         +materialized: table
         +schema: marts
-
-seeds:
-  adventure_works:
-    +schema: seeds

@@ -1,0 +1,65 @@
+
+
+models:
+
+  - name: int_location
+    description: >
+      Denormalized location model consolidating all geographic intelligence.
+      Joins physical addresses, states/provinces, and country data to output a single performant geomorphic structure
+      and generate a master geographic Surrogate Key.
+    columns:
+      - name: sk_location
+        description: "Surrogate Key (artificial primary key) generated via MD5 hash of address_id."
+        tests:
+          - unique
+          - not_null
+
+      - name: pk_address
+        description: "Natural primary key (Business Key) of the source physical address."
+        tests:
+          - unique
+          - not_null
+
+      - name: fk_address_state_province
+        description: "Foreign key linking to the corresponding state or province."
+        tests:
+          - not_null
+
+      - name: fk_country_region_code
+        description: "Official ISO code identifying the country."
+        tests:
+          - not_null
+
+      - name: address_line1
+        description: "First line of the street/physical address."
+        tests:
+          - not_null
+
+      - name: address_line2
+        description: "Second line of address/complement (COALESCE applied to return 'Not Applicable' if null)."
+
+      - name: address_city
+        description: "Name of the city where the physical address is located."
+        tests:
+          - not_null
+
+      - name: pk_state_provinc
+        description: "Official postal abbreviation of the state or province (e.g., WA, CA, SP)."
+
+      - name: state_province_name
+        description: "Full name of the corresponding state or province."
+        tests:
+          - not_null
+
+      - name: country_name
+        description: "Full name of the corresponding global country or region."
+        tests:
+          - not_null
+
+      - name: address_postal_code
+        description: "Postal code or ZIP code associated with the physical address."
+        tests:
+          - not_null
+
+      - name: fk_territory
+        description: "Identifier of the sales territory servicing this geographic location."
