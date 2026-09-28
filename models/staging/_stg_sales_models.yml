@@ -1,0 +1,109 @@
+
+
+models:
+
+  - name: stg_sales_order_headercustomer
+    description: "Staging layer for sales transaction headers."
+    columns:
+      - name: pk_sales_order
+        description: "Natural primary key of the sales order."
+        tests:
+          - unique
+          - not_null
+      - name: fk_customer
+        description: "Foreign key indicating the customer who made the purchase."
+        tests:
+          - not_null
+      - name: order_date
+        description: "Date when the order was finalized."
+        tests:
+          - not_null
+      - name: sales_order_status
+        description: "Numeric code for the operational status of the sale (e.g., 5 = Shipped)."
+        tests:
+          - not_null
+
+  - name: stg_sales_order_detail
+    description: "Staging layer mapping the detailed grain of each sold order line item."
+    columns:
+      - name: pk_sales_order_detail
+        description: "Natural primary and sequential key of the order line item."
+        tests:
+          - unique
+          - not_null
+      - name: fk_sales_order
+        description: "Foreign key linking the detail line to the order header."
+        tests:
+          - not_null
+      - name: fk_product
+        description: "Foreign key pointing to the sold product."
+        tests:
+          - not_null
+      - name: sales_order_quantity
+        description: "Physical quantity of items billed in the line item."
+        tests:
+          - not_null
+      - name: sales_unit_price
+        description: "List price charged for the product in the transaction."
+        tests:
+          - not_null
+
+  - name: stg_sales_customer
+    description: "Staging layer containing customer mappings in the commercial schema."
+    columns:
+      - name: pk_customer
+        description: "Natural primary key of the customer."
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_sales_store
+    description: "Staging layer for partner reseller stores (B2B / Resellers channel)."
+    columns:
+      - name: pk_store_business_entity_id
+        description: "Natural primary key mapping the store's business catalog."
+        tests:
+          - unique
+          - not_null
+      - name: store_name
+        description: "Commercial name or business name of the purchasing store."
+        tests:
+          - not_null
+
+  - name: stg_sales_credit_card
+    description: "Staging layer processing credit card brands associated with payments."
+    columns:
+      - name: pk_credit_card
+        description: "Natural primary key of the credit card."
+        tests:
+          - unique
+          - not_null
+      - name: credit_card_type
+        description: "Descriptive name of the credit card brand (e.g., Vista, SuperiorCard)."
+        tests:
+          - not_null
+
+  - name: stg_sales_order_header_sales_reason
+    description: "Associative staging layer mapping orders to multiple sales reasons (M:N Relationship)."
+    columns:
+      - name: pk_sales_order
+        description: "Foreign key linking to the order header."
+        tests:
+          - not_null
+      - name: fk_sales_reason
+        description: "Foreign key linking to the cataloged sales reason."
+        tests:
+          - not_null
+
+  - name: stg_sales_reason
+    description: "Staging layer containing commercially mapped sales classifications and reasons."
+    columns:
+      - name: pk_sales_reason
+        description: "Natural primary key of the commercial sales reason."
+        tests:
+          - unique
+          - not_null
+      - name: sales_reason_name
+        description: "Descriptive description of the reason (e.g., Promotion, Telemarketing, Recommendation)."
+        tests:
+          - not_null
