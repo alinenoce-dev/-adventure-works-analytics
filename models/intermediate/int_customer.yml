@@ -1,0 +1,38 @@
+
+
+models:
+
+  - name: int_customer
+    description: >
+      Master customer consolidation model for AdventureWorks.
+      Unifies individual retail customer flows (B2C - via stg_person_person) and corporate store partners
+      (B2B - via stg_sales_store), applying conditional logic to define commercial segments and cleaned customer names.
+    columns:
+      - name: pk_customer
+        description: "Natural primary key (Business Key) that uniquely identifies a customer in the CRM/ERP."
+        tests:
+          - unique
+          - not_null
+
+      - name: fk_person
+        description: "Relationship ID pointing to individual physical customer details (null for strictly corporate store accounts)."
+
+      - name: fk_store
+        description: "Relationship ID pointing to corporate store/reseller details (null for physical B2C retail customers)."
+
+      - name: fk_territory
+        description: "Sales territory identifier code linked to this customer."
+
+      - name: customer_type
+        description: "Segment classification of the customer: 'B2B' (Corporate/Store) or 'B2C' (Individual)."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['B2B', 'B2C', 'Not Informed']
+
+      - name: customer_name
+        description: >
+          Unified name of the customer. If B2C, concatenates First Name + Middle Name + Last Name cleanly.
+          If B2B, retrieves the store's commercial name (store_name). Fallback to 'Not Informed'.
+        tests:
+          - not_null

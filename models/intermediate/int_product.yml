@@ -1,0 +1,60 @@
+
+
+models:
+
+  - name: int_product
+    description: 
+      Master product intermediate model consolidating the physical hierarchy.
+      This flattens product, subcategory, and macro category data (disregarding the conceptual product models table),
+      generating a highly performant Surrogate Key for rapid downstream fact table joins.
+    columns:
+      - name: sk_product
+        description: "Surrogate Key (artificial primary key in the DW) generated via MD5 hash of pk_product."
+        tests:
+          - unique
+          - not_null
+
+      - name: pk_product
+        description: "Natural primary key (Business Key) uniquely identifying the product."
+        tests:
+          - unique
+          - not_null
+
+      - name: fk_product_subcategory
+        description: "Relationship key pointing to the product subcategory table."
+
+      - name: fk_product_category
+        description: "Relationship key pointing to the macro product category table."
+
+      - name: product_number
+        description: "Unique internal product part number."
+
+      - name: product_name
+        description: "Commercial name of the product."
+
+      - name: product_color
+        description: "Color of the product (COALESCE fallback applied to return 'Not Informed' if null)."
+    
+      - name: product_size
+        description: "Physical size measurement of the product (COALESCE fallback applied to return 'Not Applicable' if null)."
+
+      - name: product_standard_cost
+        description: "Standard cost of manufacturing or acquiring this product."
+
+      - name: product_list_price
+        description: "Official list price suggested for retail market sales."
+
+      - name: subcategory_name
+        description: "Full name of the product's subcategory (e.g., Mountain Bikes, Road Frames)."
+
+      - name: category_name
+        description: "Full name of the product's macro category (e.g., Bikes, Components, Accessories, Clothing)."
+
+      - name: product_line
+        description: "Market segment classification for the product line."
+
+      - name: product_class
+        description: "Technical quality class level assigned (e.g., H = High, M = Medium, L = Low)."
+
+      - name: product_style
+        description: "Design style of the product (W = Womens, M = Mens, U = Universal)."

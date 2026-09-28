@@ -1,8 +1,7 @@
 
-
 models:
 
-  - name: stg_sales_order_headercustomer
+  - name: stg_sales_order_header
     description: "Staging layer for sales transaction headers."
     columns:
       - name: pk_sales_order

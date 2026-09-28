@@ -1,5 +1,5 @@
 
-sources:
+models:
 
   - name: stg_person_address
     description: "Staging layer for the physical addresses table."
