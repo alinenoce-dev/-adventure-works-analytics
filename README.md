@@ -121,22 +121,28 @@ Automated data testing is embedded directly into the dbt pipeline using `schema.
 
 ---
 
-## 📊 Power BI Dashboard Architecture (3 Executive Pages)
+## 📊 Power BI Dashboard (3 Executive Pages)
 
-### Page 1: Sales Overview (Executive Cockpit)
+### Page 1: Sales Overview 
 * **5 Core KPI Cards:** Gross Revenue, Total Discounts, Net Revenue, Total Orders, Units Sold.
 * **Monthly Time Series Line Chart:** Revenue trends across years with Month-over-Month drill-down.
 * **Channel Mix (Donut Chart):** Revenue distribution between Online B2C and Reseller B2B channels.
 
-### Page 2: Customer & Location Intelligence
+![Adventure Works Dashboard - Sales Overview](docs/dashboard-salesoverview.png)
+
+### Page 2: Customer & Location 
 * **Geographic Heatmap:** Global sales density mapped across countries, states, and cities.
 * **Top 10 Customers Bar Chart:** Accumulated revenue ranking with unified B2C and B2B names.
 * **Top 5 Cities Table:** Highlighting top performing urban centers (Seattle, Sydney, London, etc.).
 
-### Page 3: Product & Sales Reason Insights
+![Adventure Works Dashboard - Customer & Location Intelligence](docs/dashboard-customerlocation.png)
+
+### Page 3: Product & Sales Reason 
 * **Product Portfolio Analysis:** Revenue and unit sales sliced by Category and Subcategory.
 * **Top 10 Products by AOV:** Identifying high-value order products.
 * **Promotional Highlight Card:** Direct identification of the #1 product sold under 'Promotion': **`Mountain-100 Black, 44`**.
+
+![Adventure Works Dashboard - PProduct & Sales Reason Insights](docs/dashboard-products-salesreason.png)
 
 ## 📐 DAX Key Measures Reference
 
@@ -201,35 +207,11 @@ CALCULATE(
 ├── tests/
 ├── macros/
 ├── docs/
-|       ├── dashboard/
-|       └── model/
 ├── dbt_project.yml
 ├── packages.yml
 └── README.md
 
 ```
-
----
-
-## 🚀 How to Reproduce & Run
-
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/your-username/adventureworks-analytics-engineering.git
-   cd adventureworks-analytics-engineering
-   ```
-
-2. **Configure dbt Profile (`profiles.yml`):**
-   Set up your Databricks connection details (host, HTTP path, personal access token, schema).
-
-3. **Install Dependencies & Execute Pipeline:**
-   ```bash
-   dbt deps
-   dbt build
-   ```
-
-4. **Connect Power BI:**
-   Open Power BI Desktop, connect to Databricks SQL Warehouse, select `marts` schema tables (`fct_sales`, `dim_*`), and refresh measures.
 
 ---
 
