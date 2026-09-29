@@ -48,19 +48,19 @@ A tabela fato principal foi definida no menor grão operacional de venda: **item
 
 ```
                   ┌──────────────────────┐
-                  │   dim_customers_en   │
+                  │   dim_customers      │
                   └──────────┬───────────┘
                              │ (1:N)
-┌──────────────────────┐     ▼     ┌──────────────────────┐
-│   dim_products_en    ├───► ┌───┐ ◄───┤   dim_locations_en   │
+┌──────────────────────┐     ▼      ┌──────────────────────┐
+│   dim_products       ├───► ┌───┐ ◄───┤   dim_locations   │
 └──────────────────────┘     │F  │  └──────────────────────┘
                              │C  │
 ┌──────────────────────┐     │T  │     ┌──────────────────────┐
-│  dim_credit_cards_en ├───► │_  │ ◄───┤     dim_date_en      │
+│  dim_credit_cards    ├───► │_  │ ◄───┤     dim_dates        │
 └──────────────────────┘     │S  │     └──────────────────────┘
                              │A  │
 ┌──────────────────────┐     │L  │     ┌──────────────────────────────┐
-│ dim_sales_reasons_en ├─┐   │E  │ ┌───┤ fct_sales_reasons_bridge     │
+│ dim_sales_reasons    ├─┐   │E  │ ┌───┤ fct_sales_reasons_bridge     │
 └──────────────────────┘ │   │S  │ │   └──────────────────────────────┘
                          └──►└───┘◄┘ (Relacionamento N:M Resolvido)
 ```
@@ -126,19 +126,40 @@ O painel é composto por **3 abas executivas** e atende a padrões avançados de
 
 ```dax
 // Receita Líquida
-Receita Líquida = SUM(fct_sales[net_revenue])
+NET_REVENUE = SUM( fct_sales[net_revenue] )
 
 // Ticket Médio
-Ticket Médio = DIVIDE([Receita Líquida], [Total Pedidos], 0)
+AVERAGE_TICKET = DIVIDE([NET_REVENUE],[TOTAL_ORDERS], 0)
 
-// Top Produto em Promoção (Objetivo f)
-Top Produto Promoção = 
+// Ticket Médio por cliente
+CLIENT_AVERAGE_TICKET = DIVIDE( [NET_REVENUE], [TOTAL_ACTIVE_CLIENTS], 0)
+
+// Quantidade de produtos vendidos
+PRODUCTS_SOLD_QUANTITY = SUM(fct_sales[sales_order_quantity] )
+
+// Total de cliente ativos
+TOTAL_ACTIVE_CLIENTS = DISTINCTCOUNT(fct_sales[sk_customer] )
+
+// Top 1 da cidade com maior faturamento
+TOP_ONE_CITY_REVENUE = 
 CALCULATE(
-    SELECTEDVALUE(dim_products_en[product_name], "N/A"),
+    SELECTEDVALUE( dim_location[address_city], "nO CITY" ),
     TOPN(
         1,
-        ALL(dim_products_en[product_name]),
-        CALCULATE(SUM(fct_sales[order_qty]), dim_sales_reasons_en[sales_reason_name] = "Promotion"),
+        VALUES( dim_location[address_city] ),
+        [NET_REVENUE],
+        DESC
+    )
+)
+
+// Top Produto em Promoção
+TOP_ONE_PRODUCT_PROMOTION = 
+CALCULATE(
+    SELECTEDVALUE( dim_products[product_name], "No Product" ),
+    TOPN(
+        1,
+        ALL( dim_products[product_name] ),
+        [PROMOTION_SALES_QUANTITY],
         DESC
     )
 )
@@ -154,11 +175,12 @@ CALCULATE(
 │   ├── models/
 │   ├── tests/
 │   └── dbt_project.yml
-├── docs/                       # Documentação técnica e Diagrama Conceitual (PDF)
-│   └── CEA_AW_DIAGRAMA_CONCEITUAL_CASSIA_TRINTINI.pdf
-├── eda/                        # Notebooks de Análise Exploratória (Python & SQL)
-│   └── eda_adventureworks_databricks_sql.sql
-├── powerbi/                    # Arquivo do relatório Power BI (.pbix)
+├── docs/                       # Documentação técnica e Diagrama Conceitual (PDF) e arquivos do Dashboard
+│   └── diagrama_concenitual.pdf 
+|   └── dashboard_preview.png
+|   └── relatorio_vendas.pbix   # Arquivo do relatório Power BI (.pbix)
+├── eda/                        # Notebooks de Análise Exploratória (SQL)
+│   └── EDA_adventureworks.ipynb
 └── README.md                   # Documentação principal do repositório
 ```
 
