@@ -24,7 +24,7 @@ with
             , cast(onlineorderflag as boolean) as sales_online_order
             , cast(orderdate as timestamp) as order_date
             , cast(duedate as timestamp) as order_due_date
-            , cast(shipdate as timestamp) as oreder_hip_date
+            , cast(shipdate as timestamp) as order_ship_date
             , cast(subtotal as numeric(18,4)) as order_subtotal
             , cast(taxamt as numeric(18,4)) as order_tax_amount
             , cast(freight as numeric(18,4)) as order_freight_amount

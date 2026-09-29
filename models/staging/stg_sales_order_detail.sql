@@ -15,7 +15,7 @@ with
             , cast(orderqty as int) as sales_order_quantity
             , cast(unitprice as numeric(18,4)) as sales_unit_price
             , cast(unitpricediscount as numeric(18,4)) as sales_unit_price_discount
-            , cast(modifieddate as timestamp) sales_oreder_detail_modified_date
+            , cast(modifieddate as timestamp) sales_order_detail_modified_date
             
         from source_salesorderdetail
     )

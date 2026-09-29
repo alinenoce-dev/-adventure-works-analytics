@@ -1,0 +1,75 @@
+
+
+models:
+  - name: dim_dates
+    description: >
+      Conformed Date Calendar dimension table (Star Schema).
+      Provides exhaustive temporal attributes (Year, Quarter, Month, Day, Semester, Month Names, Day Names, and Weekend Flags)
+      to power time-series analysis, period-over-period revenue metrics, and seasonality forecasting in Power BI.
+    columns:
+      - name: sk_date
+        description: "Surrogate Key (integer formatted as YYYYMMDD, e.g., 20080115) serving as the primary key of the calendar dimension."
+        tests:
+          - unique
+          - not_null
+
+      - name: date_value
+        description: "Actual DATE data type representing the specific calendar day."
+        tests:
+          - unique
+          - not_null
+
+      - name: year
+        description: "Four-digit calendar year (e.g., 2008)."
+        tests:
+          - not_null
+
+      - name: quarter
+        description: "Calendar quarter number of the year (1 to 4)."
+        tests:
+          - not_null
+
+      - name: month
+        description: "Calendar month number of the year (1 to 12)."
+        tests:
+          - not_null
+
+      - name: day_of_month
+        description: "Day number of the month (1 to 31)."
+        tests:
+          - not_null
+
+      - name: day_of_week
+        description: "Day number of the week (1 = Sunday to 7 = Saturday)."
+        tests:
+          - not_null
+
+      - name: semester
+        description: "Calendar semester half of the year (1 = H1, 2 = H2)."
+        tests:
+          - not_null
+
+      - name: year_quarter
+        description: "Formatted year and quarter identifier string (e.g., '2008Q1')."
+        tests:
+          - not_null
+
+      - name: month_name
+        description: "Full month name in English (e.g., January, February)."
+        tests:
+          - not_null
+
+      - name: month_name_short
+        description: "Three-letter abbreviated month name in English (e.g., Jan, Feb)."
+        tests:
+          - not_null
+
+      - name: day_name
+        description: "Full day of the week name in English (e.g., Monday, Tuesday)."
+        tests:
+          - not_null
+
+      - name: is_weekend
+        description: "Boolean flag indicating whether the date falls on a weekend (true for Saturday/Sunday, false otherwise)."
+        tests:
+          - not_null

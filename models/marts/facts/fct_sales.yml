@@ -1,0 +1,118 @@
+
+models:
+
+  - name: fct_sales
+    description: >
+      Sales Fact Table (Star Schema Marts Layer).
+      Consolidates transaction header and detail line items at the detail level (SalesOrderDetail),
+      linking conformed dimensions via MD5 surrogate keys and utilizing standardized staging column names (pk_*, fk_*).
+
+    columns:
+      - name: sk_sales
+        description: "Surrogate Key uniquely identifying each sold line item (hash of fk_sales_order + pk_sales_order_detail)."
+        tests:
+          - unique
+          - not_null
+
+      - name: pk_sales_order
+        description: "Natural Business Key (Header ID) of the sales order."
+        tests:
+          - not_null
+
+      - name: pk_sales_order_detail
+        description: "Natural Business Key (Detail ID) of the line item."
+        tests:
+          - unique
+          - not_null
+
+      - name: sales_order_number
+        description: "Unique commercial sales order identification code (e.g., SO43659)."
+
+      - name: sk_product
+        description: "Foreign key pointing to dim_products."
+        tests:
+          - not_null
+
+      - name: sk_customer
+        description: "Foreign key pointing to dim_customers."
+        tests:
+          - not_null
+
+      - name: sk_location
+        description: "Foreign key pointing to dim_locations based on ship-to address."
+        tests:
+          - not_null
+
+      - name: sk_bill_to_address
+        description: "Foreign key pointing to dim_locations based on billing address."
+        tests:
+          - not_null
+
+      - name: sk_credit_card
+        description: "Foreign key pointing to dim_credit_cards."
+        tests:
+          - not_null
+
+      - name: sk_order_date
+        description: "Foreign key pointing to dim_dateS (YYYYMMDD integer format)."
+        tests:
+          - not_null
+
+      - name: sk_due_date
+        description: "Foreign key pointing to dim_datES for order due date."
+        tests:
+          - not_null
+
+      - name: sk_ship_date
+        description: "Foreign key pointing to dim_dates for order ship date."
+        tests:
+          - not_null
+
+      - name: sales_order_status
+        description: "Status code of the order (1=In process, 2=Approved, 3=Backordered, 4=Rejected, 5=Shipped, 6=Cancelled)."
+        tests:
+          - not_null
+
+      - name: sales_online_order
+        description: "Boolean flag indicating whether the order was placed online (true) or via reseller (false)."
+        tests:
+          - not_null
+
+      - name: fk_salesperson
+        description: "Foreign key linking to the assigned salesperson."
+
+      - name: fk_territory
+        description: "Foreign key linking to the sales territory."
+
+      - name: fk_special_offer_id
+        description: "Foreign key linking to special promotional offers."
+
+      - name: sales_order_quantity
+        description: "Physical unit quantity of items sold in this line."
+        tests:
+          - not_null
+
+      - name: sales_unit_price
+        description: "Unit selling price of the item before discount."
+        tests:
+          - not_null
+
+      - name: sales_unit_price_discount
+        description: "Percentage discount applied to the unit price (0.0 to 1.0)."
+        tests:
+          - not_null
+
+      - name: gross_revenue
+        description: "Calculated gross revenue (sales_order_quantity * sales_unit_price)."
+        tests:
+          - not_null
+
+      - name: discount_amount
+        description: "Total monetary discount amount applied to the line item."
+        tests:
+          - not_null
+
+      - name: net_revenue
+        description: "Calculated net revenue after applying discounts."
+        tests:
+          - not_null

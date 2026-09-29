@@ -1,0 +1,35 @@
+
+
+models:
+  - name: dim_credit_cards
+    description: >
+      Conformed Credit Cards dimension table (Star Schema).
+      Contains descriptive details of payment credit cards used across sales transactions,
+      including card brand types and expiration dates.
+    columns:
+      - name: sk_credit_card
+        description: "Surrogate Key (MD5 hash generated from the credit card business key)."
+        tests:
+          - unique
+          - not_null
+
+      - name: pk_credit_card
+        description: "Natural primary key (Business Key) of the credit card in the source system (CreditCardID)."
+        tests:
+          - unique
+          - not_null
+
+      - name: credit_card_type
+        description: "Brand or type of the credit card (e.g., Vista, SuperiorCard, Distinguish, ColonialVoice)."
+        tests:
+          - not_null
+
+      - name: credit_card_expiration_month
+        description: "Expiration month of the credit card (1 to 12)."
+        tests:
+          - not_null
+
+      - name: credit_card_expiration_year
+        description: "Four-digit expiration year of the credit card."
+        tests:
+          - not_null
