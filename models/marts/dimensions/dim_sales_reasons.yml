@@ -1,0 +1,30 @@
+
+models:
+
+  - name: dim_sales_reasons
+    description: >
+      Conformed Sales Reasons dimension table (Star Schema).
+      Catalogs commercial motivations, marketing classifications, and promotion types 
+      associated with customer purchase transactions.
+    columns:
+      - name: sk_sales_reason
+        description: "Surrogate Key (MD5 hash generated from sales_reason_id)."
+        tests:
+          - unique
+          - not_null
+
+      - name: pk_sales_reason
+        description: "Natural primary key (Business Key) of the sales reason in the source system (SalesReasonID)."
+        tests:
+          - unique
+          - not_null
+
+      - name: sales_reason_name
+        description: "Commercial or descriptive name of the sales reason (e.g., Price, On Promotion, Quality, Review)."
+        tests:
+          - not_null
+
+      - name: sales_reason_type
+        description: "Category classification of the sales reason (e.g., Marketing, Promotion, Other)."
+        tests:
+          - not_null

@@ -1,0 +1,55 @@
+
+
+models:
+  - name: dim_locations
+    description: "Conformed Location Dimension model (Star Schema). Consolidates denormalized physical address, state/province, country, and territory data to support regional sales and logistics analysis in Power BI."
+    columns:
+      - name: sk_location
+        description: "Surrogate Key (artificial primary key in the DW) generated via MD5 hash of the address ID."
+        tests:
+          - unique
+          - not_null
+
+      - name: pk_address
+        description: "Source Primary Key / Business Key of the physical address (AddressID)."
+        tests:
+          - unique
+          - not_null
+
+      - name: pk_state_province
+        description: "Source Primary Key / Business Key of the state or province (StateProvinceID)."
+        tests:
+          - not_null
+
+      - name: fk_address_state_province
+        description: "Foreign Key (FK) linking the physical address to its corresponding state or province."
+        tests:
+          - not_null
+
+      - name: fk_country_region_code
+        description: "Foreign Key / ISO code identifying the country or region (CountryRegionCode)."
+        tests:
+          - not_null
+
+      - name: address_city
+        description: "Official name of the city associated with the physical address."
+        tests:
+          - not_null
+
+      - name: address_postal_code
+        description: "Postal code or ZIP code associated with the physical address."
+        tests:
+          - not_null
+
+      - name: state_province_name
+        description: "Full name of the state or province."
+        tests:
+          - not_null
+
+      - name: country_name
+        description: "Full name of the global country or region."
+        tests:
+          - not_null
+
+      - name: fk_territory
+        description: "Foreign Key (FK) identifying the sales territory assigned to this location (TerritoryID)."
