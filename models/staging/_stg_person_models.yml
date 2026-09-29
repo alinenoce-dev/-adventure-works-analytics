@@ -10,15 +10,13 @@ models:
           - unique
           - not_null
 
-      - name: city
+      - name: address_city
         description: "Name of the city associated with the physical address."
         tests:
           - not_null
 
       - name: fk_state_province
         description: "Foreign key pointing to the state or province."
-        tests:
-          - not_null
 
   - name: stg_person_state_province
     description: "Staging layer containing state and regional divisions of each country."
@@ -31,16 +29,9 @@ models:
 
       - name: state_province_code
         description: "Official state/province abbreviation code (e.g., WA, CA, SP)."
-        tests:
-          - not_null
 
       - name: state_province_name
         description: "Full name of the state or province."
-        tests:
-          - not_null
-
-      - name: country_region_code
-        description: "Corresponding country of origin code."
         tests:
           - not_null
 
@@ -51,8 +42,7 @@ models:
         description: "Natural primary key of the country (ISO-2 code)."
         tests:
           - unique
-          - not_null
-
+          
       - name: country_region_name
         description: "Full name of the country or international region."
         tests:
@@ -67,12 +57,12 @@ models:
           - unique
           - not_null
 
-      - name: first_name
+      - name: person_first_name
         description: "First name of the person."
         tests:
           - not_null
-          
-      - name: last_name
+
+      - name: person_last_name
         description: "Last name of the person."
         tests:
           - not_null

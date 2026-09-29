@@ -1,0 +1,29 @@
+
+models:
+
+  - name: fct_sales_reasons_bridge
+    description: >
+      Bridge table resolving the Many-to-Many (N:M) relationship between sales orders and sales reasons.
+      Connects individual sales orders (fct_sales) to their respective sales reason dimension surrogate keys (dim_sales_reasons_en),
+      preventing revenue duplication (fan-out) when filtering by marketing or sales reasons in Power BI.
+
+    columns:
+      - name: sk_sales_reason_bridge
+        description: "Composite Surrogate Key (MD5 hash) uniquely identifying each order and sales reason association."
+        tests:
+          - unique
+          - not_null
+
+      - name: pk_sales_order
+        description: "Foreign key / Business Key referencing the sales order in fct_sales (SalesOrderID)."
+        tests:
+          - not_null
+
+      - name: sk_sales_reason
+        description: "Foreign key referencing the sales reason surrogate key in dim_sales_reasons_en."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sales_reasons')
+                field: sk_sales_reason
