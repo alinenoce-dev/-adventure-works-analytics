@@ -1,8 +1,8 @@
-# 🚴 Analytics Engineering Certification 2026 — AdventureWorks
+# 🚴 Adventure Works Analytics Platform
 
 ---
 
-## 📌 Visão Geral do Projeto
+## 📌 Project Overview
 
 A modern analytics platform designed to transform Adventure Works transactional sales data into reliable, documented, and analytics-ready data products.
 
@@ -18,9 +18,9 @@ The solution was engineered and validated to answer six core strategic questions
 | :---: | :--- | :--- | :--- |
 | **a** | **Sales Performance Overview:** Total orders, quantity sold, gross revenue, net revenue, and average order value (AOV) broken down by region, customer, credit card, sales reason, date, and status. | Additive aggregations in `fct_sales` at the sales order line item grain (`SalesOrderDetail`). | Page 1: *Sales Overview* (KPI Cockpit & Filters) |
 | **b** | **Regional & Temporal AOV:** Products with highest average order value distributed by period and geography. | DAX Measure `[AOV / Ticket Médio]` dividing net revenue by distinct order count. | Page 3: *Product & Sales Reason* |
-| **c** | **Customer Ranking:** Top 10 customers by total accumulated revenue and location. | `TOPN` ranking over unified B2C (Person) and B2B (Store) customer dimension (`dim_customers_en`). | Page 2: *Customer & Location* |
+| **c** | **Customer Ranking:** Top 10 customers by total accumulated revenue and location. | `TOP` ranking over unified B2C (Person) and B2B (Store) customer dimension (`dim_customers_en`). | Page 2: *Customer & Location* |
 | **d** | **Urban Geographic Performance:** Top 5 cities with the highest accumulated revenue. | `Top 5` filter based on `[Net Revenue]` over `dim_locations_en`. | Page 2: *Customer & Location* |
-| **e** | **Time Series & YoY Growth:** Monthly revenue evolution and Year-over-Year (YoY) comparison. | Time Intelligence DAX measures (`SAMEPERIODLASTYEAR`) and `[YoY Revenue Growth %]`. | Page 1: *Sales Overview* (YoY KPI Card) |
+| **e** | **Time Series & YoY Growth:** Monthly revenue evolution and Year-over-Year (YoY) comparison. | Time Intelligence DAX measures. | Page 1: *Sales Overview* |
 | **f** | **Promotional Impact:** Top promotional product with highest quantity sold under the **"Promotion"** sales reason. | Bridge Table `fct_sales_reasons_bridge` isolating top product: **Mountain-100 Black, 44**. | Page 3: *Product & Sales Reason* |
 
 ---
@@ -65,6 +65,14 @@ The main fact table is modeled at the atomic grain of **sales order line item (`
                          └──►└───┘◄┘ (Relacionamento N:M Resolvido)
 ```
 
+The analytical model was designed from the Adventure Works transactional schema by selecting the entities required to support the sales business questions.
+
+At its core, `fct_sales` represents one sales order item and connects directly to dimensions for products, customers, dates, credit card and location. Sales reasons are associated separately through `bridge_sales_order_reason` to safely represent the many-to-many relationship at the sales order level.
+
+![Adventure Works Conceptual Dimensional Model](docs/conceptual-dimensional-model.png)
+
+
+
 ### 🌉 Resolving Many-to-Many (N:M) Cardinality — Sales Reasons & Fan-Out Prevention
 Sales orders can have multiple sales reasons assigned in `SalesOrderHeaderSalesReason`. A direct `JOIN` between sales orders and sales reasons would duplicate revenue lines (*Fan-Out effect*). To eliminate this risk:
 1. Built intermediate table `int_sales_reasons_bridge_en.sql` mapping sales item surrogate keys to sales reason IDs.
@@ -82,20 +90,20 @@ models/
 ├── staging/                     # Data cleaning, type casting, snake_case_en standardization
 │   ├── stg_sales__sales_order_header.sql
 │   ├── stg_sales__sales_order_detail.sql
-│   ├── stg_production__product.sql
+│   ├── stg_production_product.sql
 │   └── ...
 ├── intermediate/                # Complex joins, B2C/B2B entity resolution, surrogate keys
-│   ├── int_customer_en.sql      # Unification of Person.Person (B2C) and Sales.Store (B2B)
-│   ├── int_location_en.sql      # Consolidation of Address + StateProvince + CountryRegion
-│   ├── int_product_en.sql       # Product + Subcategory + Category + Fallback keys
-│   └── int_sales_reasons_bridge_en.sql
+│   ├── int_customer.sql      # Unification of Person.Person (B2C) and Sales.Store (B2B)
+│   ├── int_location.sql      # Consolidation of Address + StateProvince + CountryRegion
+│   ├── int_product.sql       # Product + Subcategory + Category + Fallback keys
+│   └── int_sales_reasons_bridge.sql
 └── marts/                       # Gold Production Layer: Star Schema for BI consumption
-    ├── dim_customers_en.sql
-    ├── dim_products_en.sql
-    ├── dim_locations_en.sql
-    ├── dim_credit_cards_en.sql
-    ├── dim_sales_reasons_en.sql
-    ├── dim_date_en.sql
+    ├── dim_customers.sql
+    ├── dim_products.sql
+    ├── dim_locations.sql
+    ├── dim_credit_cards.sql
+    ├── dim_sales_reasons.sql
+    ├── dim_dates.sql
     ├── fct_sales.sql
     └── fct_sales_reasons_bridge.sql
 ```
