@@ -4,47 +4,47 @@
 
 ## 📌 Visão Geral do Projeto
 
-Este repositório contém a solução completa de **Analytics Engineering** desenvolvida para a **Adventure Works** como requisito final para a **Certificação de Analytics Engineer 2026**.
+A modern analytics platform designed to transform Adventure Works transactional sales data into reliable, documented, and analytics-ready data products.
 
-O projeto contempla a arquitetura de dados *end-to-end*, abrangendo a migração do sistema OLTP altamente normalizado (armazenado no **Databricks**) para um modelo dimensional **Star Schema (Modelo Estrela)** via **dbt Cloud**, além da implementação de um painel de Business Intelligence executivo e interativo no **Power BI**.
+Leveraging dbt and Databricks, the project implements a dimensional data warehouse tailored to answer critical business questions across sales performance, customer behavior, product trends, geography, payment methods, and purchasing drivers. The platform prioritizes high data quality, dimensional modeling, metric consistency, end-to-end lineage, governance, and seamless integration with BI tools.
 
 ---
 
-## 🎯 Objetivos de Negócio (Perguntas Oficiais a a f)
+## 🎯 Business Objectives & KPI Matrix (Questions a to f)
 
-A solução foi projetada e validada para responder de forma dinâmica a 6 perguntas estratégicas exigidas pela diretoria comercial:
+The solution was engineered and validated to answer six core strategic questions required by the executive sales leadership:
 
-| ID | Objetivo de Negócio | Resolução Técnica | Visual / Aba no Power BI |
+| ID | Business Goal / Question | Technical Resolution | Power BI Visual / Page |
 | :---: | :--- | :--- | :--- |
-| **a** | **Visão Geral de Vendas:** Total de pedidos, quantidade de itens, receita bruta, receita líquida e ticket médio por região, cliente, cartão, motivo, data e status. | Agregações aditivas na `fct_sales` no grão de item de pedido (`SalesOrderDetail`). | Aba 1: *Sales Overview* (KPIs & Filtros) |
-| **b** | **Ticket Médio Regional e Temporal:** Produtos com maior valor médio por pedido distribuídos por período e geografia. | Medida DAX `[Ticket Médio]` dividindo receita líquida por total de pedidos únicos. | Aba 3: *Product & Sales Reason* |
-| **c** | **Ranking de Clientes:** Top 10 clientes em valor total negociado acumulado por localização. | Ranking via `TOPN` sobre a dimensão unificada `dim_customers_en` (B2C + B2B). | Aba 2: *Customer & Location* |
-| **d** | **Desempenho Geográfico Urbano:** Top 5 cidades com maior faturamento acumulado. | Filtro `Top 5` baseado em `[Receita Líquida]` na dimensão `dim_locations_en`. | Aba 2: *Customer & Location* |
-| **e** | **Evolução Temporal & YoY:** Séries temporais de receita mensal e comparação Ano contra Ano (*Year-over-Year*). | Medidas DAX de Inteligência Temporal (`SAMEPERIODLASTYEAR`) e `[Crescimento Receita YoY %]`. | Aba 1: *Sales Overview* (Cartão KPI YoY) |
-| **f** | **Desempenho Promocional:** Produto campeão em vendas com maior quantidade sob o motivo **"Promotion"**. | Resolução via Tabela Ponte `fct_sales_reasons_bridge` isolando o produto **Mountain-100 Black, 44**. | Aba 3: *Product & Sales Reason* |
+| **a** | **Sales Performance Overview:** Total orders, quantity sold, gross revenue, net revenue, and average order value (AOV) broken down by region, customer, credit card, sales reason, date, and status. | Additive aggregations in `fct_sales` at the sales order line item grain (`SalesOrderDetail`). | Page 1: *Sales Overview* (KPI Cockpit & Filters) |
+| **b** | **Regional & Temporal AOV:** Products with highest average order value distributed by period and geography. | DAX Measure `[AOV / Ticket Médio]` dividing net revenue by distinct order count. | Page 3: *Product & Sales Reason* |
+| **c** | **Customer Ranking:** Top 10 customers by total accumulated revenue and location. | `TOPN` ranking over unified B2C (Person) and B2B (Store) customer dimension (`dim_customers_en`). | Page 2: *Customer & Location* |
+| **d** | **Urban Geographic Performance:** Top 5 cities with the highest accumulated revenue. | `Top 5` filter based on `[Net Revenue]` over `dim_locations_en`. | Page 2: *Customer & Location* |
+| **e** | **Time Series & YoY Growth:** Monthly revenue evolution and Year-over-Year (YoY) comparison. | Time Intelligence DAX measures (`SAMEPERIODLASTYEAR`) and `[YoY Revenue Growth %]`. | Page 1: *Sales Overview* (YoY KPI Card) |
+| **f** | **Promotional Impact:** Top promotional product with highest quantity sold under the **"Promotion"** sales reason. | Bridge Table `fct_sales_reasons_bridge` isolating top product: **Mountain-100 Black, 44**. | Page 3: *Product & Sales Reason* |
 
 ---
 
-## 🛠️ Arquitetura Técnica & Tecnologias
+## 🛠️ Technical Architecture & Modern Data Stack
 
 ```
-[ Dados Brutos OLTP ] ──> [ Databricks Lakehouse ] ──> [ dbt Cloud (stg_ -> int_ -> marts_) ] ──> [ Power BI Dashboard ]
-   Sales, Production,         Camada Bronze / DW          Star Schema (Fato & Dimensões)         3 Abas Executivas
-   Person
+[ Raw OLTP Source ] ──> [ Databricks Lakehouse ] ──> [ dbt Cloud (stg_ -> int_ -> marts_) ] ──> [ Power BI Dashboard ]
+  Sales, Production,         Bronze / DW Layer            Star Schema (Fact & Dimensions)          3 Executive Pages
+  Person, Purchasing
 ```
 
 * **Data Warehouse / Storage:** Databricks (Delta Lake / Unity Catalog)
-* **Engenharia de Transformação:** dbt Cloud (Data Build Tool)
-* **Modelagem Dimensional:** Kimball (Star Schema / Modelo Estrela)
-* **Qualidade e Governança:** dbt Data Tests (`unique`, `not_null`, `relationships`, `dbt build`)
-* **Visualização de Dados:** Power BI Desktop / Service (DAX, 3 Abas)
-* **Controle de Versão:** Git / GitHub
+* **Data Transformation Engine:** dbt Cloud (Data Build Tool v1.8+)
+* **Data Modeling:** Kimball Methodology (Dimensional Star Schema)
+* **Quality & Governance:** Automated dbt Tests (`unique`, `not_null`, `relationships`, `dbt build`)
+* **Data Visualization:** Power BI Desktop / Service (DAX Engine, 3 Interactive Pages)
+* **Version Control & CI/CD:** Git / GitHub Actions
 
 ---
 
-## 📐 Modelagem Dimensional (Star Schema)
+## 📐 Dimensional Modeling (Star Schema)
 
-A tabela fato principal foi definida no menor grão operacional de venda: **item de pedido (`SalesOrderDetail`)**, permitindo agregações precisas e consistência total.
+The main fact table is modeled at the atomic grain of **sales order line item (`SalesOrderDetail`)**, enabling additive aggregations without metric loss or double-counting.
 
 ```
                   ┌──────────────────────┐
@@ -65,82 +65,90 @@ A tabela fato principal foi definida no menor grão operacional de venda: **item
                          └──►└───┘◄┘ (Relacionamento N:M Resolvido)
 ```
 
-### 🌉 Resolução da Cardinalidade N:M (Motivos de Venda)
-Em pedidos de venda com múltiplos motivos associados (`SalesOrderHeaderSalesReason`), um `JOIN` direto duplicaria indevidamente a receita (*efeito Fan-Out*). Para resolver este problema:
-1. Construiu-se a tabela intermediária `int_sales_reasons_bridge.sql`.
-2. Modelou-se a fato de ligação `fct_sales_reasons_bridge.sql`.
-3. Garantiu-se que a receita total da empresa não sofra duplicação nos relatórios executivos.
+### 🌉 Resolving Many-to-Many (N:M) Cardinality — Sales Reasons & Fan-Out Prevention
+Sales orders can have multiple sales reasons assigned in `SalesOrderHeaderSalesReason`. A direct `JOIN` between sales orders and sales reasons would duplicate revenue lines (*Fan-Out effect*). To eliminate this risk:
+1. Built intermediate table `int_sales_reasons_bridge_en.sql` mapping sales item surrogate keys to sales reason IDs.
+2. Built bridge fact table `fct_sales_reasons_bridge.sql`.
+3. Ensured global net revenue remains 100% accurate and uninflated regardless of reason filtering.
 
 ---
 
-## 🏗️ Camadas de Transformação no dbt
+## 🏗️ dbt Transformation Layers
 
-O projeto dbt está estruturado em três camadas bem definidas:
+The project structure adheres to modular dbt best practices across three distinct layers:
 
 ```
 models/
-├── staging/                     # Limpeza, padronização de tipos (casting) e snake_case
+├── staging/                     # Data cleaning, type casting, snake_case_en standardization
 │   ├── stg_sales__sales_order_header.sql
 │   ├── stg_sales__sales_order_detail.sql
 │   ├── stg_production__product.sql
 │   └── ...
-├── intermediate/                # Junções complexas, desnormalizações e unificação B2C/B2B
-│   ├── int_customer.sql      # Unificação de Person.Person e Sales.Store
-│   ├── int_location.sql      # Consolidação de Address + StateProvince + CountryRegion
-│   ├── int_product.sql       # Product + Subcategory + Category
-│   └── int_sales_reasons_bridge.sql
-└── marts/                       # Camada Gold: Tabelas prontas para consumo no BI
-    ├── dim_customers.sql
-    ├── dim_products.sql
-    ├── dim_locations.sql
-    ├── dim_credit_cards.sql
-    ├── dim_sales_reasons.sql
-    ├── dim_dates.sql
+├── intermediate/                # Complex joins, B2C/B2B entity resolution, surrogate keys
+│   ├── int_customer_en.sql      # Unification of Person.Person (B2C) and Sales.Store (B2B)
+│   ├── int_location_en.sql      # Consolidation of Address + StateProvince + CountryRegion
+│   ├── int_product_en.sql       # Product + Subcategory + Category + Fallback keys
+│   └── int_sales_reasons_bridge_en.sql
+└── marts/                       # Gold Production Layer: Star Schema for BI consumption
+    ├── dim_customers_en.sql
+    ├── dim_products_en.sql
+    ├── dim_locations_en.sql
+    ├── dim_credit_cards_en.sql
+    ├── dim_sales_reasons_en.sql
+    ├── dim_date_en.sql
     ├── fct_sales.sql
     └── fct_sales_reasons_bridge.sql
 ```
 
 ---
 
-## 🧪 Governança e Testes de Dados (`dbt test`)
+## 🛡️ Data Quality, Testing & Governance
 
-A integridade dos dados é garantida por testes automatizados em todas as camadas:
+Automated data testing is embedded directly into the dbt pipeline using `schema.yml` assertions:
 
-* **Testes de Fonte (`sources`):** Validação de disponibilidade com `dbt test --select source:*`.
-* **Testes de Chaves:** Verificação de unicidade (`unique`) e não-nulidade (`not_null`) em todas as PKs.
-* **Integridade Referencial:** Testes de chave estrangeira (`relationships`) entre `fct_sales` e todas as dimensões conformadas.
-* **Execução Global:** Sucesso em 100% dos testes via `dbt build`.
+* **Primary Key Integrity:** `unique` and `not_null` tests on all Surrogate Keys generated via `dbt_utils.generate_surrogate_key` (MD5 hashes).
+* **Referential Integrity:** `relationships` tests enforcing valid foreign key links between `fct_sales` and all dimension tables.
+* **Fallback Keys:** Foreign key nulls are replaced with `-1` / `'Unassigned'` surrogate keys to prevent row loss during `INNER JOIN` operations.
+* **Build Status:** 100% pass rate across all models verified via `dbt build`.
 
 ---
 
-## 📊 Dashboard no Power BI
+## 📊 Power BI Dashboard Architecture (3 Executive Pages)
 
-O painel é composto por **3 abas executivas** e atende a padrões avançados de UX/UI:
+### Page 1: Sales Overview (Executive Cockpit)
+* **5 Core KPI Cards:** Gross Revenue, Total Discounts, Net Revenue, Total Orders, Units Sold.
+* **Monthly Time Series Line Chart:** Revenue trends across years with Month-over-Month drill-down.
+* **Channel Mix (Donut Chart):** Revenue distribution between Online B2C and Reseller B2B channels.
 
-### 📱 **Estrutura das Abas:**
-1. **Aba 1 — Sales Overview:** Cockpit financeiro executivo com KPIs principais (`Receita Líquida`, `Total Pedidos`, `Ticket Médio`), gráfico temporal de vendas, mix de canais.
-2. **Aba 2 — Customer & Location:** Mapa de calor geográfico interativo, ranking dos **Top 10 Clientes** em receita acumulada e **Top 5 Cidades**, com cartões customizados de detalhamento por país.
-3. **Aba 3 — Product & Sales Reason:** Análise de portfólio por **Top 10 Produtos em Ticket Médio** (Objetivo b) e o **Cartão de Destaque** exibindo o produto campeão de vendas sob a regra de promoção (**Mountain-100 Black, 44** - Objetivo f).
+### Page 2: Customer & Location Intelligence
+* **Geographic Heatmap:** Global sales density mapped across countries, states, and cities.
+* **Top 10 Customers Bar Chart:** Accumulated revenue ranking with unified B2C and B2B names.
+* **Top 5 Cities Table:** Highlighting top performing urban centers (Seattle, Sydney, London, etc.).
 
-### 🔢 **Principais Fórmulas DAX (`_Measures`):**
+### Page 3: Product & Sales Reason Insights
+* **Product Portfolio Analysis:** Revenue and unit sales sliced by Category and Subcategory.
+* **Top 10 Products by AOV:** Identifying high-value order products.
+* **Promotional Highlight Card:** Direct identification of the #1 product sold under 'Promotion': **`Mountain-100 Black, 44`**.
+
+## 📐 DAX Key Measures Reference
 
 ```dax
-// Receita Líquida
+// Net Revenue
 NET_REVENUE = SUM( fct_sales[net_revenue] )
 
-// Ticket Médio
+// Average Ticket
 AVERAGE_TICKET = DIVIDE([NET_REVENUE],[TOTAL_ORDERS], 0)
 
-// Ticket Médio por cliente
+// Average Ticket by Client
 CLIENT_AVERAGE_TICKET = DIVIDE( [NET_REVENUE], [TOTAL_ACTIVE_CLIENTS], 0)
 
-// Quantidade de produtos vendidos
+// Products Sold Quantity
 PRODUCTS_SOLD_QUANTITY = SUM(fct_sales[sales_order_quantity] )
 
-// Total de cliente ativos
+// Active Clients Total
 TOTAL_ACTIVE_CLIENTS = DISTINCTCOUNT(fct_sales[sk_customer] )
 
-// Top 1 da cidade com maior faturamento
+// Top 1 City by Revenue
 TOP_ONE_CITY_REVENUE = 
 CALCULATE(
     SELECTEDVALUE( dim_location[address_city], "nO CITY" ),
@@ -152,7 +160,7 @@ CALCULATE(
     )
 )
 
-// Top Produto em Promoção
+// Top 1 Product by Promotion
 TOP_ONE_PRODUCT_PROMOTION = 
 CALCULATE(
     SELECTEDVALUE( dim_products[product_name], "No Product" ),
@@ -167,44 +175,61 @@ CALCULATE(
 
 ---
 
-## 📁 Estrutura do Repositório
+## 📁 Repository Structure
 
 ```
-├── .github/                    # Workflows CI/CD
-├── dbt_project/                # Projeto dbt Cloud (models, tests, macros, yml)
-│   ├── models/
-│   ├── tests/
-│   └── dbt_project.yml
-├── docs/                       # Documentação técnica e Diagrama Conceitual (PDF) e arquivos do Dashboard
-│   └── diagrama_concenitual.pdf 
-|   └── dashboard_preview.png
-|   └── relatorio_vendas.pbix   # Arquivo do relatório Power BI (.pbix)
-├── eda/                        # Notebooks de Análise Exploratória (SQL)
-│   └── EDA_adventureworks.ipynb
-└── README.md                   # Documentação principal do repositório
+.
+├── models/
+│   ├── staging/
+│   │
+│   ├── intermediate/
+│   │
+│   └── marts/
+│       ├── dimensions/
+│       ├── bridge/
+|       └── facts/
+│
+├── seeds/
+├── tests/
+├── macros/
+├── docs/
+|       ├── dashboard/
+|       └── model/
+├── dbt_project.yml
+├── packages.yml
+└── README.md
+
 ```
 
 ---
 
-## 🚀 Como Executar o Projeto
+## 🚀 How to Reproduce & Run
 
-1. **Clonar o Repositório:**
+1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/seu-usuario/adventureworks-analytics-engineering.git
+   git clone https://github.com/your-username/adventureworks-analytics-engineering.git
    cd adventureworks-analytics-engineering
    ```
-2. **Configurar dbt Cloud / CLI:**
-   * Configure as credenciais de conexão com o **Databricks** no arquivo `profiles.yml`.
-   * Instale as dependências de pacotes:
-     ```bash
-     dbt deps
-     ```
-3. **Executar as Transformações e Testes:**
+
+2. **Configure dbt Profile (`profiles.yml`):**
+   Set up your Databricks connection details (host, HTTP path, personal access token, schema).
+
+3. **Install Dependencies & Execute Pipeline:**
    ```bash
+   dbt deps
    dbt build
    ```
-4. **Abrir o Painel no Power BI:**
-   * Abra o arquivo localizado em `powerbi/` no Power BI Desktop e credencie a conexão com o Databricks.
+
+4. **Connect Power BI:**
+   Open Power BI Desktop, connect to Databricks SQL Warehouse, select `marts` schema tables (`fct_sales`, `dim_*`), and refresh measures.
+
+---
+
+## Author
+
+**Aline Satomi Noce**
+
+Analytics Engineering • dbt • Databricks • SQL • Power BI
 
 ---
 
