@@ -30,9 +30,7 @@ with
     , persons as (
         select
             pk_business_entity_id
-            , person_first_name
-            , person_middle_name
-            , person_last_name
+            , person_full_name
         from {{ ref('stg_person_person') }}
     )
 
@@ -58,16 +56,7 @@ with
             end as customer_type
 
             , case
-                when customers.fk_customer_person is not null then
-                    trim(
-                        coalesce(persons.person_first_name, '') || ' ' ||
-                        case 
-                            when persons.person_middle_name is not null and persons.person_middle_name != '' 
-                            then persons.person_middle_name || ' ' 
-                            else '' 
-                        end ||
-                        coalesce(persons.person_last_name, '')
-                    )
+                when customers.fk_customer_person is not null then persons.person_full_name
                 when customers.fk_store is not null then stores.store_name
                 else 'Not Informed'
             end as customer_name

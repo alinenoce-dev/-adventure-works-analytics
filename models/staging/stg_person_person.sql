@@ -15,8 +15,7 @@ with
             , cast(firstname as string) as person_first_name
             , cast(middlename as string) as person_middle_name
             , cast(lastname as string) as person_last_name
-            , cast(suffix as string) as person_name_suffix
-            , cast(emailpromotion as int) as peron_email_promotion
+            , trim(concat_ws(' ', firstname, middlename, lastname)) as person_full_name
             , cast(modifieddate as timestamp) as person_modified_date
             
         from source_person
