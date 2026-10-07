@@ -66,3 +66,8 @@ models:
         description: "Last name of the person."
         tests:
           - not_null
+          
+      - name: person_full_name
+        description: "Customer full name."
+        tests:
+          - not_null
