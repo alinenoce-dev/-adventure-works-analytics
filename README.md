@@ -123,6 +123,10 @@ Automated data testing is embedded directly into the dbt pipeline using `schema.
 
 ## 📊 Power BI Dashboard (3 Executive Pages)
 
+### Dashboard Cover 
+
+![Adventure Works Dashboard - Sales Overview](docs/dashboard-cover.png)
+
 ### Page 1: Sales Overview 
 * **5 Core KPI Cards:** Gross Revenue, Total Discounts, Net Revenue, Total Orders, Units Sold.
 * **Monthly Time Series Line Chart:** Revenue trends across years with Month-over-Month drill-down.
