@@ -18,8 +18,8 @@ The solution was engineered and validated to answer six core strategic questions
 | :---: | :--- | :--- | :--- |
 | **a** | **Sales Performance Overview:** Total orders, quantity sold, gross revenue, net revenue, and average order value (AOV) broken down by region, customer, credit card, sales reason, date, and status. | Additive aggregations in `fct_sales` at the sales order line item grain (`SalesOrderDetail`). | Page 1: *Sales Overview* (KPI Cockpit & Filters) |
 | **b** | **Regional & Temporal AOV:** Products with highest average order value distributed by period and geography. | DAX Measure `[AOV / Ticket Médio]` dividing net revenue by distinct order count. | Page 3: *Product & Sales Reason* |
-| **c** | **Customer Ranking:** Top 10 customers by total accumulated revenue and location. | `TOP` ranking over unified B2C (Person) and B2B (Store) customer dimension (`dim_customers_en`). | Page 2: *Customer & Location* |
-| **d** | **Urban Geographic Performance:** Top 5 cities with the highest accumulated revenue. | `Top 5` filter based on `[Net Revenue]` over `dim_locations_en`. | Page 2: *Customer & Location* |
+| **c** | **Customer Ranking:** Top 10 customers by total accumulated revenue and location. | `TOP` ranking over unified B2C (Person) and B2B (Store) customer dimension (`dim_customers`). | Page 2: *Customer & Location* |
+| **d** | **Urban Geographic Performance:** Top 5 cities with the highest accumulated revenue. | `Top 5` filter based on `[Net Revenue]` over `dim_locations`. | Page 2: *Customer & Location* |
 | **e** | **Time Series & YoY Growth:** Monthly revenue evolution and Year-over-Year (YoY) comparison. | Time Intelligence DAX measures. | Page 1: *Sales Overview* |
 | **f** | **Promotional Impact:** Top promotional product with highest quantity sold under the **"Promotion"** sales reason. | Bridge Table `fct_sales_reasons_bridge` isolating top product: **Mountain-100 Black, 44**. | Page 3: *Product & Sales Reason* |
 
@@ -75,7 +75,7 @@ At its core, `fct_sales` represents one sales order item and connects directly t
 
 ### 🌉 Resolving Many-to-Many (N:M) Cardinality — Sales Reasons & Fan-Out Prevention
 Sales orders can have multiple sales reasons assigned in `SalesOrderHeaderSalesReason`. A direct `JOIN` between sales orders and sales reasons would duplicate revenue lines (*Fan-Out effect*). To eliminate this risk:
-1. Built intermediate table `int_sales_reasons_bridge_en.sql` mapping sales item surrogate keys to sales reason IDs.
+1. Built intermediate table `int_sales_reasons_bridge.sql` mapping sales item surrogate keys to sales reason IDs.
 2. Built bridge fact table `fct_sales_reasons_bridge.sql`.
 3. Ensured global net revenue remains 100% accurate and uninflated regardless of reason filtering.
 
@@ -87,7 +87,7 @@ The project structure adheres to modular dbt best practices across three distinc
 
 ```
 models/
-├── staging/                     # Data cleaning, type casting, snake_case_en standardization
+├── staging/                     # Data cleaning, type casting
 │   ├── stg_sales__sales_order_header.sql
 │   ├── stg_sales__sales_order_detail.sql
 │   ├── stg_production_product.sql
@@ -130,7 +130,8 @@ Automated data testing is embedded directly into the dbt pipeline using `schema.
 ### Page 1: Sales Overview 
 * **5 Core KPI Cards:** Gross Revenue, Total Discounts, Net Revenue, Total Orders, Units Sold.
 * **Monthly Time Series Line Chart:** Revenue trends across years with Month-over-Month drill-down.
-* **Channel Mix (Donut Chart):** Revenue distribution between Online B2C and Reseller B2B channels.
+* **Monthly Time Series Line Chart:** Revenue distribution among category, subcategory and product.
+* **Credit Card Type (Donut Chart):** Revenue distribution between Credit Card Types.
 
 ![Adventure Works Dashboard - Sales Overview](docs/dashboard-salesoverview.png)
 
@@ -138,13 +139,14 @@ Automated data testing is embedded directly into the dbt pipeline using `schema.
 * **Geographic Heatmap:** Global sales density mapped across countries, states, and cities.
 * **Top 10 Customers Bar Chart:** Accumulated revenue ranking with unified B2C and B2B names.
 * **Top 5 Cities Table:** Highlighting top performing urban centers (Seattle, Sydney, London, etc.).
-
+* * **Client Type (Donut Chart):** Revenue distribution between type of clients B2B or B2C.
+    
 ![Adventure Works Dashboard - Customer & Location Intelligence](docs/dashboard-customerlocation.png)
 
 ### Page 3: Product & Sales Reason 
 * **Product Portfolio Analysis:** Revenue and unit sales sliced by Category and Subcategory.
 * **Top 10 Products by AOV:** Identifying high-value order products.
-* **Promotional Highlight Card:** Direct identification of the #1 product sold under 'Promotion': **`Mountain-100 Black, 44`**.
+* **Promotional Highlight Card:** Direct identification of the #1 product sold under 'On Promotion': **`Water Bottle - 30oz`**, by quantity sold.
 
 ![Adventure Works Dashboard - PProduct & Sales Reason Insights](docs/dashboard-products-salesreason.png)
 
