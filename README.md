@@ -130,7 +130,7 @@ Automated data testing is embedded directly into the dbt pipeline using `schema.
 ### Page 1: Sales Overview 
 * **5 Core KPI Cards:** Gross Revenue, Total Discounts, Net Revenue, Total Orders, Units Sold.
 * **Monthly Time Series Line Chart:** Revenue trends across years with Month-over-Month drill-down.
-* **Monthly Time Series Line Chart:** Revenue distribution among category, subcategory and product.
+* **Product Category Bar Chart:** Revenue distribution among category, subcategory and product.
 * **Credit Card Type (Donut Chart):** Revenue distribution between Credit Card Types.
 
 ![Adventure Works Dashboard - Sales Overview](docs/dashboard-salesoverview.png)
