@@ -128,7 +128,7 @@ Automated data testing is embedded directly into the dbt pipeline using `schema.
 ![Adventure Works Dashboard - Sales Overview](docs/dashboard-cover.png)
 
 ### Page 1: Sales Overview 
-* **5 Core KPI Cards:** Gross Revenue, Total Discounts, Net Revenue, Total Orders, Units Sold.
+* **4 Core KPI Cards:** Net Revenue, Average Ticket, Total Orders, Units Sold.
 * **Monthly Time Series Line Chart:** Revenue trends across years with Month-over-Month drill-down.
 * **Product Category Bar Chart:** Revenue distribution among category, subcategory and product.
 * **Credit Card Type (Donut Chart):** Revenue distribution between Credit Card Types.
@@ -139,13 +139,13 @@ Automated data testing is embedded directly into the dbt pipeline using `schema.
 * **Geographic Heatmap:** Global sales density mapped across countries, states, and cities.
 * **Top 10 Customers Bar Chart:** Accumulated revenue ranking with unified B2C and B2B names.
 * **Top 5 Cities Table:** Highlighting top performing urban centers (Seattle, Sydney, London, etc.).
-* * **Client Type (Donut Chart):** Revenue distribution between type of clients B2B or B2C.
+* **Client Type (Donut Chart):** Revenue distribution between type of clients B2B or B2C.
     
 ![Adventure Works Dashboard - Customer & Location Intelligence](docs/dashboard-customerlocation.png)
 
 ### Page 3: Product & Sales Reason 
 * **Product Portfolio Analysis:** Revenue and unit sales sliced by Category and Subcategory.
-* **Top 10 Products by AOV:** Identifying high-value order products.
+* **Top 10 Products:** Identifying high-value order products.
 * **Promotional Highlight Card:** Direct identification of the #1 product sold under 'On Promotion': **`Water Bottle - 30oz`**, by quantity sold.
 
 ![Adventure Works Dashboard - PProduct & Sales Reason Insights](docs/dashboard-products-salesreason.png)
